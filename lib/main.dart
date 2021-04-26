@@ -1,3 +1,5 @@
+import 'package:ble_oscilloscope/control_panel_widget.dart';
+import 'package:ble_oscilloscope/scope_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'layout/responsive_layout.dart';
@@ -27,12 +29,8 @@ class MyHomePage extends StatelessWidget {
         title: Text("BLE Oscilloscope"),
       ),
       body: ResponsiveLayout(
-        scopeWidget: Placeholder(
-          color: Colors.red,
-        ),
-        controlPanelWidget: Placeholder(
-          color: Colors.green,
-        ),
+        scopeWidget: ScopeWidget(),
+        controlPanelWidget: ControlPanelWidget(),
       ),
     );
   }

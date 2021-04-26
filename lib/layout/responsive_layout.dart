@@ -16,11 +16,11 @@ class ResponsiveLayout extends StatelessWidget {
             children: [
               Expanded(
                 child: scopeWidget,
-                flex: 3,
+                flex: 1,
               ),
               Expanded(
                 child: controlPanelWidget,
-                flex: 2,
+                flex: 1,
               )
             ],
           );
