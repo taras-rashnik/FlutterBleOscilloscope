@@ -13,6 +13,7 @@ class ResponsiveLayout extends StatelessWidget {
       builder: (context, orientation) {
         if (orientation == Orientation.portrait) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                 child: scopeWidget,
@@ -26,6 +27,7 @@ class ResponsiveLayout extends StatelessWidget {
           );
         } else {
           return Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                 child: scopeWidget,
