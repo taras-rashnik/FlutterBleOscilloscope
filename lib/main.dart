@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'layout/responsive_layout.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -24,18 +26,13 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("BLE Oscilloscope"),
       ),
-      body: OrientationBuilder(
-        builder: (context, orientation) {
-          if (orientation == Orientation.portrait) {
-            return Placeholder(
-              color: Colors.red,
-            );
-          } else {
-            return Placeholder(
-              color: Colors.green,
-            );
-          }
-        },
+      body: ResponsiveLayout(
+        scopeWidget: Placeholder(
+          color: Colors.red,
+        ),
+        controlPanelWidget: Placeholder(
+          color: Colors.green,
+        ),
       ),
     );
   }
