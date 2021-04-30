@@ -16,14 +16,30 @@ class BleResponsiveService {
   Stream<List<int>> get samplesStream => _streamController.stream;
 
   Future<void> start() async {
-    Fimber.i("BleResponsiveService.start().");
+    Fimber.i("start().");
 
     try {
+      _ble.statusStream.listen((status) {
+        Fimber.i("Status: $status");
+      });
+
       await _checkPermissions();
       DiscoveredDevice device = await _findDevice();
       await _connectToDevice(device);
+      await Future.delayed(Duration(seconds: 2));
+      await _ble.requestMtu(deviceId: device.id, mtu: 517);
+      var stream = _getCharacteristicStream(device);
+
+      stream.listen(
+        (data) {
+          _streamController.sink.add(data);
+        },
+        onError: (dynamic error) {
+          Fimber.e("error getting data", ex: error);
+        },
+      );
     } catch (e) {
-      Fimber.e("Error in BleResponsiveService.start().", ex: e);
+      Fimber.e("Error in start().", ex: e);
     }
 
     // int counter = 10;
@@ -127,5 +143,15 @@ class BleResponsiveService {
     });
 
     return completer.future;
+  }
+
+  Stream<List<int>> _getCharacteristicStream(DiscoveredDevice device) {
+    var characteristic = QualifiedCharacteristic(
+      serviceId: SERVICE_UUID,
+      characteristicId: CHARACTERISTIC_UUID,
+      deviceId: device.id,
+    );
+
+    return _ble.subscribeToCharacteristic(characteristic);
   }
 }
