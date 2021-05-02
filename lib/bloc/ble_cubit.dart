@@ -67,13 +67,22 @@ class BleCubit extends Cubit<BleState> {
     }
   }
 
+  StreamSubscription _connectionStateSubscription = null;
+
   void connect() {
     disconnect();
-    Fimber.i("Connecting to ${state.selectedDevice}");
+    final device = state.selectedDevice;
+    if (device == null) return;
+
+    Fimber.i("Connecting to $device");
+    _connectionStateSubscription = bleService.connectToDevice(device);
   }
 
   void disconnect() {
     Fimber.i("Disconnectiong...");
+    _connectionStateSubscription?.cancel();
+    _connectionStateSubscription = null;
+    emit(state.update(connectionState: BleDeviceConnectionState.disconnected));
   }
 
   void selectDevice(BleDevice device) {

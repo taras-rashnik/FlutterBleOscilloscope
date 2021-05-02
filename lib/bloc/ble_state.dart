@@ -58,7 +58,7 @@ class BleState {
   BleState addDevice(BleDevice device) {
     if (devices.any((element) => element.id == device.id)) return this;
 
-    return update(devices: [device, ...devices]);
+    return update(devices: [...devices, device]);
   }
 
   BleState addError(String error) {

@@ -9,24 +9,20 @@ import 'package:permission_handler/permission_handler.dart';
 
 class BleResponsiveService {
   final Uuid SERVICE_UUID = Uuid.parse("924c7d3c-a4da-11eb-bcbc-0242ac130002");
-  final Uuid CHARACTERISTIC_UUID =
-      Uuid.parse("a4154cd8-a4da-11eb-bcbc-0242ac130002");
+  final Uuid CHARACTERISTIC_UUID = Uuid.parse("a4154cd8-a4da-11eb-bcbc-0242ac130002");
 
   final _ble = FlutterReactiveBle();
 
   final _samplesStreamController = StreamController<List<int>>();
   Stream<List<int>> get samplesStream => _samplesStreamController.stream;
 
-  Stream<String> get statusStream =>
-      _ble.statusStream.map((status) => status.toString());
+  Stream<String> get statusStream => _ble.statusStream.map((status) => status.toString());
 
   final _devicesStreamController = StreamController<BleDevice>();
   Stream<BleDevice> get devicesStream => _devicesStreamController.stream;
 
-  final _connectionStateStreamController =
-      StreamController<BleDeviceConnectionState>();
-  Stream<BleDeviceConnectionState> get connectionStateStream =>
-      _connectionStateStreamController.stream;
+  final _connectionStateStreamController = StreamController<BleDeviceConnectionState>();
+  Stream<BleDeviceConnectionState> get connectionStateStream => _connectionStateStreamController.stream;
 
   // Future<void> start() async {
   //   Fimber.i("start().");
@@ -116,10 +112,8 @@ class BleResponsiveService {
   //   return completer.future;
   // }
 
-  Future<void> connectToDevice(BleDevice device) async {
+  StreamSubscription connectToDevice(BleDevice device) {
     Fimber.i("connectToDevice(${device.name ?? device.id})");
-
-    final completer = Completer();
 
     final stream = _ble.connectToAdvertisingDevice(
       id: device.id,
@@ -132,42 +126,34 @@ class BleResponsiveService {
       connectionTimeout: const Duration(seconds: 2),
     );
 
-    StreamSubscription<ConnectionStateUpdate> subscription;
-    subscription = stream.listen((event) {
+    return stream.listen((event) {
       switch (event.connectionState) {
         case DeviceConnectionState.connecting:
           {
             Fimber.i("Connecting to ${event.deviceId}");
-            _connectionStateStreamController.sink
-                .add(BleDeviceConnectionState.connecting);
+            _connectionStateStreamController.sink.add(BleDeviceConnectionState.connecting);
             break;
           }
         case DeviceConnectionState.connected:
           {
             Fimber.i("Connected to ${event.deviceId}");
-            _connectionStateStreamController.sink
-                .add(BleDeviceConnectionState.connected);
-            completer.complete();
+            _connectionStateStreamController.sink.add(BleDeviceConnectionState.connected);
             break;
           }
         case DeviceConnectionState.disconnecting:
           {
             Fimber.i("Disconnecting from ${event.deviceId}");
-            _connectionStateStreamController.sink
-                .add(BleDeviceConnectionState.disconnecting);
+            _connectionStateStreamController.sink.add(BleDeviceConnectionState.disconnecting);
             break;
           }
         case DeviceConnectionState.disconnected:
           {
             Fimber.i("Disconnected from ${event.deviceId}");
-            _connectionStateStreamController.sink
-                .add(BleDeviceConnectionState.disconnected);
+            _connectionStateStreamController.sink.add(BleDeviceConnectionState.disconnected);
             break;
           }
       }
     });
-
-    return completer.future;
   }
 
   Stream<List<int>> _getCharacteristicStream(DiscoveredDevice device) {

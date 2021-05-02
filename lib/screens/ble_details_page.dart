@@ -37,7 +37,7 @@ Widget _getConnectButton(BuildContext context, BleState state) {
           : null);
 
   String title =
-      state.connected ? "disconnect" : (state.disconnected ? "connect" : null);
+      state.connected ? "disconnect" : (state.disconnected ? "connect" : "");
 
   return TextButton(
     onPressed: onPressed,
